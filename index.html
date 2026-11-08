@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Гостьова книга</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 640px; margin: 30px auto; padding: 0 16px; background: #f4f6f8; color: #222; }
+    h1 { text-align: center; }
+    form, .msg { background: #fff; padding: 14px; border-radius: 8px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+    input, textarea { width: 100%; box-sizing: border-box; padding: 8px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 4px; font: inherit; }
+    button { background: #2d6cdf; color: #fff; border: 0; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+    .del { background: #c0392b; padding: 4px 10px; font-size: 12px; }
+    .meta { color: #777; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
+    .flash { background: #e8f5e9; padding: 8px; border-radius: 4px; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <h1>Гостьова книга</h1>
+
+  {% with msgs = get_flashed_messages() %}
+    {% for m in msgs %}<div class="flash">{{ m }}</div>{% endfor %}
+  {% endwith %}
+
+  <form action="{{ url_for('add') }}" method="post">
+    <input name="name" placeholder="Ваше ім'я" maxlength="50" required>
+    <textarea name="text" rows="3" placeholder="Ваше повідомлення" maxlength="500" required></textarea>
+    <button type="submit">Надіслати</button>
+  </form>
+
+  {% for id, name, text, created in messages %}
+    <div class="msg">
+      <strong>{{ name }}</strong>
+      <p>{{ text }}</p>
+      <div class="meta">
+        <span>{{ created }}</span>
+        <form action="{{ url_for('delete', msg_id=id) }}" method="post" style="margin:0;padding:0;box-shadow:none;background:none">
+          <button class="del" type="submit">Видалити</button>
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <p style="text-align:center;color:#777">Повідомлень поки немає.</p>
+  {% endfor %}
+</body>
+</html>
